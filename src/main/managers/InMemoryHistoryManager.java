@@ -1,5 +1,4 @@
 package main.managers;
-
 import main.tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +43,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             final Node<Task> oldTail = tail;
             final Node<Task> newNode = new Node<>(oldTail, element, null);
             tail = newNode;
-            if (oldTail == null) head = newNode;
-            else oldTail.next = newNode;
+            if (oldTail == null)
+                head = newNode;
+            else
+                oldTail.next = newNode;
             size++;
 
 

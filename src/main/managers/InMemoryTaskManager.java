@@ -1,7 +1,9 @@
 package main.managers;
 
-import main.tasks.*;
 import main.status.Status;
+import main.tasks.Epic;
+import main.tasks.Subtask;
+import main.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,21 +78,21 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void delEpicById(int id) {
-        ArrayList<Integer> subId = epics.get(id).getSubtaskId();
+        ArrayList<Integer> SubId = epics.get(id).getSubtaskId();
         epics.remove(id);
-        for (int i = 0; i < subId.size(); i++) {
-            subtasks.remove(subId.get(i));
+        for (int i = 0; i < SubId.size(); i++) {
+            subtasks.remove(SubId.get(i));
         }
         history.remove(id);
     }
 
     public ArrayList<Subtask> getAllEpicSubtask(int id) {
         ArrayList<Integer> subId = epics.get(id).getSubtaskId();
-        ArrayList<Subtask> copySubId = new ArrayList<>();
+        ArrayList<Subtask> copy_subId = new ArrayList<>();
         for (int i = 0; i < subId.size(); i++) {
-            copySubId.add(subtasks.get(subId.get(i)));
+            copy_subId.add(subtasks.get(subId.get(i)));
         }
-        return copySubId;
+        return copy_subId;
     }
 
     public void updateEpic(Epic epic) {
@@ -147,23 +149,23 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void calculateStatus(Subtask subtask) {
-        Epic newEpic = epics.get(subtask.getEpicId());
-        ArrayList<Integer> newSubId = newEpic.getSubtaskId();
+        Epic NewEpic = epics.get(subtask.getEpicId());
+        ArrayList<Integer> NewSubId = NewEpic.getSubtaskId();
         int countDone = 0;
         int countNew = 0;
         int countInProgress = 0;
-        for (int i = 0; i < newSubId.size(); i++) {
-            if (subtasks.get(newSubId.get(i)).getStatus() == Status.DONE) {
+        for (int i = 0; i < NewSubId.size(); i++) {
+            if (subtasks.get(NewSubId.get(i)).getStatus() == Status.DONE) {
                 countDone++;
-            } else if (subtasks.get(newSubId.get(i)).getStatus() == Status.NEW) {
+            } else if (subtasks.get(NewSubId.get(i)).getStatus() == Status.NEW) {
                 countNew++;
             } else {
                 countInProgress++;
             }
         }
-        if (countDone == newSubId.size()) {
+        if (countDone == NewSubId.size()) {
             epics.get(subtask.getEpicId()).setStatus(Status.DONE);
-        } else if (countNew == newSubId.size()) {
+        } else if (countNew == NewSubId.size()) {
             epics.get(subtask.getEpicId()).setStatus(Status.NEW);
         } else {
             epics.get(subtask.getEpicId()).setStatus(Status.IN_PROGRESS);
