@@ -1,4 +1,7 @@
-package tests;
+package main.managers;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import main.managers.*;

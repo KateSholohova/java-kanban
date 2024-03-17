@@ -1,5 +1,5 @@
-package tests;
-
+package main.managers;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import main.managers.*;
