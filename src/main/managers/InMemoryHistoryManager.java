@@ -7,35 +7,35 @@ import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    DoublyLinkedList<Task> tasks_not_repeat = new DoublyLinkedList<>();
+    DoublyLinkedList tasksNotRepeat = new DoublyLinkedList();
     HashMap<Integer, Node> history = new HashMap<>();
 
     @Override
     public void add(Task task) {
         if (!(history.containsKey(task.getId()))) {
-            tasks_not_repeat.linkLast(task);
-            history.put(task.getId(), tasks_not_repeat.tail);
+            tasksNotRepeat.linkLast(task);
+            history.put(task.getId(), tasksNotRepeat.tail);
         } else {
-            tasks_not_repeat.removeNode(history.get(task.getId()));
+            tasksNotRepeat.removeNode(history.get(task.getId()));
             history.remove(task.getId());
-            tasks_not_repeat.linkLast(task);
-            history.put(task.getId(), tasks_not_repeat.tail);
+            tasksNotRepeat.linkLast(task);
+            history.put(task.getId(), tasksNotRepeat.tail);
         }
     }
 
     @Override
     public ArrayList<Task> getHistory() {
-        return tasks_not_repeat.getTasks();
+        return tasksNotRepeat.getTasks();
     }
 
     @Override
     public void remove(int id) {
-        tasks_not_repeat.removeNode(history.get(id));
+        tasksNotRepeat.removeNode(history.get(id));
         history.remove(id);
 
     }
 
-    class DoublyLinkedList<Task> {
+    class DoublyLinkedList {
         public Node<Task> head;
         public Node<Task> tail;
         private int size = 0;
@@ -78,15 +78,15 @@ public class InMemoryHistoryManager implements HistoryManager {
         public void removeNode(Node temp) {
 
             if (temp != null) {
-                if (temp == tasks_not_repeat.head) {
+                if (temp == tasksNotRepeat.head) {
 
-                    tasks_not_repeat.head = tasks_not_repeat.head.next;
-                    if (tasks_not_repeat.head != null) tasks_not_repeat.head.prev = null;
-                    else tasks_not_repeat.tail = null;
-                } else if (temp == tasks_not_repeat.tail) {
-                    tasks_not_repeat.tail = tasks_not_repeat.tail.prev;
-                    if (tasks_not_repeat.tail != null) tasks_not_repeat.tail.next = null;
-                    else tasks_not_repeat.head = tasks_not_repeat.tail;
+                    tasksNotRepeat.head = tasksNotRepeat.head.next;
+                    if (tasksNotRepeat.head != null) tasksNotRepeat.head.prev = null;
+                    else tasksNotRepeat.tail = null;
+                } else if (temp == tasksNotRepeat.tail) {
+                    tasksNotRepeat.tail = tasksNotRepeat.tail.prev;
+                    if (tasksNotRepeat.tail != null) tasksNotRepeat.tail.next = null;
+                    else tasksNotRepeat.head = tasksNotRepeat.tail;
 
                 } else {
                     temp.prev.next = temp.next;
