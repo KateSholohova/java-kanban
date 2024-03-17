@@ -1,12 +1,8 @@
 package main.managers;
 
 import main.tasks.Task;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -16,7 +12,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (!(history.containsKey(task.getId()))){
+        if (!(history.containsKey(task.getId()))) {
             tasks_not_repeat.linkLast(task);
             history.put(task.getId(), tasks_not_repeat.tail);
         } else {
@@ -33,11 +29,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(int id){
+    public void remove(int id) {
         tasks_not_repeat.removeNode(history.get(id));
         history.remove(id);
 
     }
+
     class DoublyLinkedList<Task> {
         public Node<Task> head;
         public Node<Task> tail;
@@ -47,24 +44,22 @@ public class InMemoryHistoryManager implements HistoryManager {
             final Node<Task> oldTail = tail;
             final Node<Task> newNode = new Node<>(oldTail, element, null);
             tail = newNode;
-            if (oldTail == null)
-                head = newNode;
-            else
-                oldTail.next = newNode;
+            if (oldTail == null) head = newNode;
+            else oldTail.next = newNode;
             size++;
 
 
         }
 
 
-        public ArrayList<Task> getTasks(){
+        public ArrayList<Task> getTasks() {
             ArrayList<Task> his = new ArrayList<>();
-            if(head.data != null){
+            if (head.data != null) {
                 Task task = head.data;
                 his.add(task);
-                if(head.next != null){
+                if (head.next != null) {
                     Node<Task> node = head.next;
-                    while (node != null){
+                    while (node != null) {
                         task = node.data;
                         his.add(task);
                         node = node.next;
@@ -75,27 +70,27 @@ public class InMemoryHistoryManager implements HistoryManager {
             return his;
 
         }
+
         public int size() {
             return this.size;
         }
-        public void removeNode(Node temp){
 
-            if(temp!=null){
-                if(temp==tasks_not_repeat.head){
+        public void removeNode(Node temp) {
 
-                    tasks_not_repeat.head=tasks_not_repeat.head.next;
-                    if(tasks_not_repeat.head!=null) tasks_not_repeat.head.prev=null;
-                    else tasks_not_repeat.tail=null;
-                }
-                else if(temp==tasks_not_repeat.tail){
-                    tasks_not_repeat.tail=tasks_not_repeat.tail.prev;
-                    if(tasks_not_repeat.tail!=null) tasks_not_repeat.tail.next=null;
-                    else tasks_not_repeat.head=tasks_not_repeat.tail;
+            if (temp != null) {
+                if (temp == tasks_not_repeat.head) {
 
-                }
-                else{
-                    temp.prev.next=temp.next;
-                    temp.next.prev=temp.prev;
+                    tasks_not_repeat.head = tasks_not_repeat.head.next;
+                    if (tasks_not_repeat.head != null) tasks_not_repeat.head.prev = null;
+                    else tasks_not_repeat.tail = null;
+                } else if (temp == tasks_not_repeat.tail) {
+                    tasks_not_repeat.tail = tasks_not_repeat.tail.prev;
+                    if (tasks_not_repeat.tail != null) tasks_not_repeat.tail.next = null;
+                    else tasks_not_repeat.head = tasks_not_repeat.tail;
+
+                } else {
+                    temp.prev.next = temp.next;
+                    temp.next.prev = temp.prev;
 
                 }
 

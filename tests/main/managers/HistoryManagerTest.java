@@ -1,20 +1,17 @@
 package main.managers;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
-import org.junit.jupiter.api.BeforeEach;
-import main.managers.*;
 import main.status.Status;
-import main.tasks.*;
+import main.tasks.Task;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class HistoryManagerTest {
 
     @Test
-    public void TestAdd(){
+    public void TestAdd() {
         Managers managers = new Managers();
         TaskManager manage = managers.getDefault();
         manage.putTask(new Task("Первая задача", "...", Status.NEW));
@@ -27,7 +24,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    public void TestRemove(){
+    public void TestRemove() {
         Managers managers = new Managers();
         TaskManager manage = managers.getDefault();
         Task task = new Task("Первая задача", "...", Status.NEW);

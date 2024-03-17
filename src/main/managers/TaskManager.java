@@ -5,14 +5,11 @@ import main.tasks.Subtask;
 import main.tasks.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public interface TaskManager {
 
 
     void putTask(Task task);
-
 
 
     ArrayList<Task> getTasks();

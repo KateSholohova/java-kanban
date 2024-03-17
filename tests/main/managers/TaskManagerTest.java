@@ -1,13 +1,12 @@
 package main.managers;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
-import org.junit.jupiter.api.BeforeEach;
-import main.managers.*;
 import main.status.Status;
-import main.tasks.*;
+import main.tasks.Epic;
+import main.tasks.Subtask;
+import main.tasks.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest {
@@ -49,7 +48,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void TestGetTasks(){
+    void TestGetTasks() {
         assertEquals(2, manage.getTasks().size());
     }
 
@@ -132,12 +131,10 @@ class TaskManagerTest {
 
     @Test
     void updateSubtask() {
-        Subtask Testsub = new Subtask("Измененная первая подзадача", " ", Status.DONE, 3, 4 );
+        Subtask Testsub = new Subtask("Измененная первая подзадача", " ", Status.DONE, 3, 4);
         manage.updateSubtask(Testsub);
         assertEquals(Testsub, manage.getSubtaskById(4));
     }
-
-
 
 
 }

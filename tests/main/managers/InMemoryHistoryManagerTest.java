@@ -1,11 +1,13 @@
 package main.managers;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import main.managers.*;
 import main.status.Status;
-import main.tasks.*;
+import main.tasks.Epic;
+import main.tasks.Subtask;
+import main.tasks.Task;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class InMemoryTaskManagerTest {
 
@@ -39,7 +41,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void CanNotAddEpicInEpic () {
+    public void CanNotAddEpicInEpic() {
         Managers managers = new Managers();
         TaskManager manage = managers.getDefault();
         Epic epic = new Epic("Первый эпик", "описание");
@@ -53,7 +55,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void SubtaskCanNotBeEpic () {
+    public void SubtaskCanNotBeEpic() {
         Managers managers = new Managers();
         TaskManager manage = managers.getDefault();
         Epic epic = new Epic("Первый эпик", "описание");
@@ -61,9 +63,6 @@ class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("Первая подзадача", " ", Status.NEW, 2);
         assertNull(manage.getEpicById(subtask.getEpicId()));
     }
-
-
-
 
 
 }

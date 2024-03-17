@@ -1,17 +1,22 @@
 package main.tasks;
+
 import main.status.Status;
+
 import java.util.Objects;
+
 public class Task {
     private final String name;
     private final String description;
     private int id;
     private Status status;
+
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
 
     }
+
     public Task(String name, String description, Status status, int id) {
         this.name = name;
         this.description = description;
@@ -28,9 +33,11 @@ public class Task {
     public String toString() {
         return "Название: " + name + "; Описание: " + description + "; id: " + id + "; статус: " + status;
     }
+
     public String getName() {
         return name;
     }
+
     public String getDescription() {
         return description;
     }

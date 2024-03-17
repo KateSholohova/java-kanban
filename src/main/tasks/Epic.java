@@ -3,18 +3,20 @@ package main.tasks;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Epic extends Task{
+public class Epic extends Task {
     private ArrayList<Integer> SubtaskId = new ArrayList<>();
-    public Epic(String name, String description){
+
+    public Epic(String name, String description) {
         super(name, description);
     }
-    public Epic(String name, String description, int id){
+
+    public Epic(String name, String description, int id) {
         super(name, description);
         setId(id);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Название: " + getName() + "; Описание: " + getDescription() + "; id: " + getId() + "; статус: " + getStatus() + "; Список id подзадач: " + SubtaskId;
     }
 
@@ -23,9 +25,9 @@ public class Epic extends Task{
     }
 
     public void setSubtaskId(ArrayList<Integer> SubtaskId) {
-        if (SubtaskId != null){
+        if (SubtaskId != null) {
             this.SubtaskId = SubtaskId;
-        } else{
+        } else {
             this.SubtaskId = new ArrayList<>();
         }
 
@@ -37,7 +39,7 @@ public class Epic extends Task{
         if (o == null || getClass() != o.getClass()) return false;
         Epic epic = (Epic) o;
         return this.getId() == epic.getId() && this.getName().equals(epic.getName()) && this.getDescription().equals(epic.getDescription())
-                && this.getStatus().equals(epic.getStatus())  && this.getSubtaskId().equals(epic.getSubtaskId());
+                && this.getStatus().equals(epic.getStatus()) && this.getSubtaskId().equals(epic.getSubtaskId());
     }
 
     @Override
