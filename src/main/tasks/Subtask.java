@@ -7,14 +7,14 @@ import java.util.Objects;
 public class Subtask extends Task {
     private int epicId;
 
-    public Subtask(String name, String description, Status status, int EpicId) {
+    public Subtask(String name, String description, Status status, int epicId) {
         super(name, description, status);
-        this.epicId = EpicId;
+        this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Status status, int EpicId, int id) {
+    public Subtask(String name, String description, Status status, int eEpicId, int id) {
         super(name, description, status, id);
-        this.epicId = EpicId;
+        this.epicId = epicId;
     }
 
     @Override
