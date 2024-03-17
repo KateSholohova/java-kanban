@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private ArrayList<Integer> SubtaskId = new ArrayList<>();
+    private ArrayList<Integer> subtaskId = new ArrayList<>();
 
     public Epic(String name, String description) {
         super(name, description);
@@ -17,18 +17,18 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Название: " + getName() + "; Описание: " + getDescription() + "; id: " + getId() + "; статус: " + getStatus() + "; Список id подзадач: " + SubtaskId;
+        return "Название: " + getName() + "; Описание: " + getDescription() + "; id: " + getId() + "; статус: " + getStatus() + "; Список id подзадач: " + subtaskId;
     }
 
     public ArrayList<Integer> getSubtaskId() {
-        return SubtaskId;
+        return subtaskId;
     }
 
     public void setSubtaskId(ArrayList<Integer> SubtaskId) {
         if (SubtaskId != null) {
-            this.SubtaskId = SubtaskId;
+            this.subtaskId = SubtaskId;
         } else {
-            this.SubtaskId = new ArrayList<>();
+            this.subtaskId = new ArrayList<>();
         }
 
     }

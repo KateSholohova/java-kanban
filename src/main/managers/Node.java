@@ -1,6 +1,8 @@
 package main.managers;
 
-class Node<Task> {
+import main.tasks.Task;
+
+class Node<T extends Task> {
 
     public Task data;
     public Node<Task> next;
