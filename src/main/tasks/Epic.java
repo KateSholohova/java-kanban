@@ -24,9 +24,9 @@ public class Epic extends Task {
         return subtaskId;
     }
 
-    public void setSubtaskId(ArrayList<Integer> SubtaskId) {
-        if (SubtaskId != null) {
-            this.subtaskId = SubtaskId;
+    public void setSubtaskId(ArrayList<Integer> subtaskId) {
+        if (subtaskId != null) {
+            this.subtaskId = subtaskId;
         } else {
             this.subtaskId = new ArrayList<>();
         }
