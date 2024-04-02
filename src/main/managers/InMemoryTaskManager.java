@@ -10,12 +10,12 @@ import java.util.HashMap;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    int count = 0;
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
-    private HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private int count = 0;
+    protected HashMap<Integer, Task> tasks = new HashMap<>();
+    protected HashMap<Integer, Epic> epics = new HashMap<>();
+    protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-    private InMemoryHistoryManager history = Managers.getDefaultHistory();
+    protected InMemoryHistoryManager history = Managers.getDefaultHistory();
 
     public int identify() {
         return ++count;
@@ -140,7 +140,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask != null) {
             history.add(subtask);
         }
-
         return subtask;
     }
 
@@ -186,6 +185,43 @@ public class InMemoryTaskManager implements TaskManager {
 
     public ArrayList<Task> getHistory() {
         return history.getHistory();
+    }
+
+    protected void putTaskFromFile(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    protected void putEpicFromFile(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    protected void putSubtaskFromFile(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+    }
+
+    protected void findEpicSubtasks() {
+        for (Epic epic : epics.values()) {
+            for (Subtask subtask : subtasks.values()) {
+                if (subtask.getEpicId() == epic.getId()) {
+                    epic.getSubtaskId().add(subtask.getId());
+                }
+            }
+            epics.put(epic.getId(), epic);
+        }
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    protected void putHistoryFromFile(int idOfTask) {
+        if (tasks.containsKey(idOfTask)) {
+            history.add(tasks.get(idOfTask));
+        } else if (subtasks.containsKey(idOfTask)) {
+            history.add(subtasks.get(idOfTask));
+        } else if (epics.containsKey(idOfTask)) {
+            history.add(epics.get(idOfTask));
+        }
     }
 
 
