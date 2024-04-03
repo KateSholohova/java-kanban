@@ -14,38 +14,40 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     File fileToSve;
     int maxId = 0;
-    static List<Integer> hisFromFile = new ArrayList<>();
+
     InMemoryHistoryManager inMemoryHistoryManager;
 
-    public FileBackedTaskManager(File path) {
-        fileToSve = path;
+    public FileBackedTaskManager(String prefix, String suffix) {
+        try {
+            fileToSve = File.createTempFile(prefix, suffix);
+        } catch (IOException e) {
+            System.out.println("Ошибка создания файла");
+        }
+
 
     }
 
     public void save() {
-        try {
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileToSve.toString(), StandardCharsets.UTF_8))) {
-                bufferedWriter.write("id,type,name,status,description,epic \n");
-                for (Task task : getTasks()) {
-                    bufferedWriter.write(toString(task) + "\n");
-                }
-                for (Epic epic : getEpic()) {
-                    bufferedWriter.write(toString(epic) + "\n");
-                }
-                for (Subtask subtask : getSubtask()) {
-                    bufferedWriter.write(toString(subtask) + "\n");
-                }
-                if (inMemoryHistoryManager != null) {
-                    bufferedWriter.write(historyToString(inMemoryHistoryManager));
-                }
 
-            } catch (IOException e) {
-                throw new ManagerSaveException("Ошибка в сохранение");
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileToSve.toString(), StandardCharsets.UTF_8))) {
+            bufferedWriter.write("id,type,name,status,description,epic \n");
+            for (Task task : getTasks()) {
+                bufferedWriter.write(toString(task) + "\n");
             }
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
+            for (Epic epic : getEpic()) {
+                bufferedWriter.write(toString(epic) + "\n");
+            }
+            for (Subtask subtask : getSubtask()) {
+                bufferedWriter.write(toString(subtask) + "\n");
+            }
+            if (inMemoryHistoryManager != null) {
+                bufferedWriter.write(historyToString(inMemoryHistoryManager));
+            }
 
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка в сохранение");
         }
+
 
     }
 
@@ -82,8 +84,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             maxId = someTask.getId();
                         }
                     }
-                    findEpicSubtasks();
-                    setCount(maxId);
+
                 } else if (!line.contains("id")) {
 
                     List<Integer> hisFromFile = historyFromString(line);
@@ -93,8 +94,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
 
             }
+            findEpicSubtasks();
+            setCount(maxId);
         } catch (IOException e) {
-            System.out.println("Произошла ошибка во время чтения файла.");
+            throw new ManagerLoadException("Ошибка в загрузке");
         }
     }
 
@@ -205,9 +208,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     static List<Integer> historyFromString(String value) {
-
+        List hisFromFile = new ArrayList<>();
         String[] historyFromFile = value.split(",");
         for (int i = 0; i < historyFromFile.length; i += 1) {
+
             int key = Integer.parseInt(historyFromFile[i]);
             hisFromFile.add(key);
         }

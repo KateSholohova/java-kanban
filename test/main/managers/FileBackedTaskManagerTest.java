@@ -16,7 +16,7 @@ class FileBackedTaskManagerTest {
     void TestSaveEmpty() {
         try {
             File file = File.createTempFile("test", "txt");
-            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager("test", "txt");
             fileBackedTaskManager.putTask(new Task("Первая задача", "...", Status.NEW));
             fileBackedTaskManager.delTaskById(1);
             Managers managers;
@@ -37,7 +37,7 @@ class FileBackedTaskManagerTest {
 
         try {
             File file = File.createTempFile("test1", "txt");
-            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager("test1", "txt");
             Task task = new Task("Первая задача", "...", Status.NEW);
             fileBackedTaskManager.putTask(task);
             int i = 0;
