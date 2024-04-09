@@ -5,6 +5,7 @@ import main.tasks.Subtask;
 import main.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -49,5 +50,7 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     ArrayList<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
 
 }
