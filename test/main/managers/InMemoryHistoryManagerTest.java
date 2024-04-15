@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
@@ -74,11 +72,10 @@ class InMemoryTaskManagerTest {
         TaskManager manage = managers.getDefault();
         Task task1 = new Task("Первая задача", "...", Status.NEW, LocalDateTime.of(2024, 8, 4, 8, 0), Duration.ofMinutes(60));
         Task task2 = new Task("Вторая задача", "!!!", Status.NEW, LocalDateTime.of(2024, 8, 4, 8, 0), Duration.ofMinutes(60));
-        manage.putTask(task1);
-        manage.putTask(task2);
-        ArrayList<Task> tasks = manage.getTasks();
-        assertEquals(1, tasks.size());
-        assertEquals(task1, tasks.get(0));
+        assertThrows(ValidException.class, () -> {
+            manage.putTask(task1);
+            manage.putTask(task2);
+        });
 
     }
 

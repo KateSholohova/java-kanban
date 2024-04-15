@@ -30,8 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void putTask(Task task) {
         if (!valid(task)) {
-            System.out.println("Задача пересекается");
-            return;
+            throw new ValidException("Задача пересекается");
         }
         int id = identify();
         task.setId(id);
@@ -65,8 +64,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void updateTask(Task task) {
         if (!valid(task)) {
-            System.out.println("Задача пересекается");
-            return;
+            throw new ValidException("Задача пересекается");
         }
         tasks.put(task.getId(), task);
         Task replaceTask = tasks.get(task.getId());
@@ -77,8 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void putEpic(Epic epic) {
         if (!valid(epic)) {
-            System.out.println("Задача пересекается");
-            return;
+            throw new ValidException("Задача пересекается");
         }
         int id = identify();
         epic.setId(id);
@@ -134,8 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void updateEpic(Epic epic) {
         if (!valid(epic)) {
-            System.out.println("Задача пересекается");
-            return;
+            throw new ValidException("Задача пересекается");
         }
         Epic oldepic = epics.get(epic.getId());
         epic.setSubtaskId(oldepic.getSubtaskId());
@@ -148,8 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void putSubtask(Subtask subtask) {
         if (!valid(subtask)) {
-            System.out.println("Задача пересекается");
-            return;
+            throw new ValidException("Задача пересекается");
         }
         int id = identify();
         subtask.setId(id);
@@ -201,8 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void updateSubtask(Subtask subtask) {
         if (!valid(subtask)) {
-            System.out.println("Задача пересекается");
-            return;
+            throw new ValidException("Задача пересекается");
         }
         subtasks.put(subtask.getId(), subtask);
         calculateStatus(subtask);
@@ -276,7 +270,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void createEpicDateTime(Epic epic) {
+    protected void createEpicDateTime(Epic epic) {
         List<Integer> subTaskList = epic.getSubtaskId();
         if (subTaskList.isEmpty()) {
             epic.setDuration(null);
@@ -331,16 +325,18 @@ public class InMemoryTaskManager implements TaskManager {
             return true;
         }
         for (Task prioritizedTask : prioritizedTasks) {
-            LocalDateTime begin = prioritizedTask.getStartTime();
-            LocalDateTime end = prioritizedTask.getEndTime();
-            if (start.isEqual(begin) || start.isEqual(end) || finish.isEqual(end) || finish.isEqual(begin)) {
-                return false;
-            }
-            if ((start.isAfter(begin) && start.isBefore(end)) || (finish.isAfter(begin) && finish.isBefore(end))) {
-                return false;
-            }
-            if (start.isBefore(begin) && finish.isAfter(end)) {
-                return false;
+            if (task.getId() != prioritizedTask.getId()) {
+                LocalDateTime begin = prioritizedTask.getStartTime();
+                LocalDateTime end = prioritizedTask.getEndTime();
+                if (start.isEqual(begin) || start.isEqual(end) || finish.isEqual(end) || finish.isEqual(begin)) {
+                    return false;
+                }
+                if ((start.isAfter(begin) && start.isBefore(end)) || (finish.isAfter(begin) && finish.isBefore(end))) {
+                    return false;
+                }
+                if (start.isBefore(begin) && finish.isAfter(end)) {
+                    return false;
+                }
             }
         }
         return true;
