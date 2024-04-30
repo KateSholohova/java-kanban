@@ -7,6 +7,9 @@ import main.tasks.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest {
@@ -22,14 +25,14 @@ class TaskManagerTest {
     public void beforeEach() {
         managers = new Managers();
         manage = managers.getDefault();
-        task1 = new Task("Первая задача", "...", Status.NEW);
-        task2 = new Task("Вторая задача", "!!!", Status.NEW);
+        task1 = new Task("Первая задача", "...", Status.NEW, LocalDateTime.of(2024, 8, 4, 8, 0), Duration.ofMinutes(60));
+        task2 = new Task("Вторая задача", "!!!", Status.NEW, LocalDateTime.of(2024, 9, 4, 8, 0), Duration.ofMinutes(60));
         manage.putTask(task1);
         manage.putTask(task2);
         epic = new Epic("Первый эпик", "описание");
         manage.putEpic(epic);
-        subtask1 = new Subtask("Первая подзадача", " ", Status.NEW, 3);
-        subtask2 = new Subtask("Вторая подзадача", " ", Status.NEW, 3);
+        subtask1 = new Subtask("Первая подзадача", " ", Status.NEW, 3, LocalDateTime.of(2024, 10, 4, 8, 0), Duration.ofMinutes(60));
+        subtask2 = new Subtask("Вторая подзадача", " ", Status.NEW, 3, LocalDateTime.of(2024, 11, 4, 8, 0), Duration.ofMinutes(60));
         manage.putSubtask(subtask1);
         manage.putSubtask(subtask2);
     }
@@ -55,13 +58,14 @@ class TaskManagerTest {
     @Test
     void TestDelTaskById() {
         Task Testtask = manage.getTaskById(1);
+
         manage.delTaskById(1);
         assertFalse(manage.getTasks().contains(Testtask));
     }
 
     @Test
     void updateTask() {
-        Task Testtask = new Task("Измененная первая задача", " ", Status.DONE, 1);
+        Task Testtask = new Task("Измененная первая задача", " ", Status.DONE, 1, LocalDateTime.of(2025, 8, 4, 8, 0), Duration.ofMinutes(60));
         manage.updateTask(Testtask);
         assertEquals(Testtask, manage.getTaskById(1));
     }
@@ -75,7 +79,8 @@ class TaskManagerTest {
 
     @Test
     void getEpic() {
-        assertEquals(1, manage.getEpic().size());
+        int sizeEpic = manage.getEpic().size();
+        assertEquals(1, sizeEpic);
     }
 
     @Test
@@ -131,7 +136,7 @@ class TaskManagerTest {
 
     @Test
     void updateSubtask() {
-        Subtask Testsub = new Subtask("Измененная первая подзадача", " ", Status.DONE, 3, 4);
+        Subtask Testsub = new Subtask("Измененная первая подзадача", " ", Status.DONE, 3, 4, LocalDateTime.of(2029, 8, 4, 8, 0), Duration.ofMinutes(60));
         manage.updateSubtask(Testsub);
         assertEquals(Testsub, manage.getSubtaskById(4));
     }
