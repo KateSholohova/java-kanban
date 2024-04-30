@@ -2,24 +2,26 @@ package main.tasks;
 
 import main.status.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private int epicId;
 
-    public Subtask(String name, String description, Status status, int epicId) {
-        super(name, description, status);
+    public Subtask(String name, String description, Status status, int epicId, LocalDateTime startTime, Duration duration) {
+        super(name, description, status, startTime, duration);
         this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Status status, int epicId, int id) {
-        super(name, description, status, id);
+    public Subtask(String name, String description, Status status, int epicId, int id, LocalDateTime startTime, Duration duration) {
+        super(name, description, status, id, startTime, duration);
         this.epicId = epicId;
     }
 
     @Override
     public String toString() {
-        return "Название: " + getName() + "; Описание: " + getDescription() + "; id: " + getId() + "; статус: " + getStatus() + "; id эпика: " + epicId;
+        return "Название: " + getName() + "; Описание: " + getDescription() + "; id: " + getId() + "; статус: " + getStatus() + "; начало выполнения: " + getStartTime().format(formatter) + "; продолжительность в минутах: " + getDuration().toMinutes() + "; id эпика: " + epicId;
     }
 
     public int getEpicId() {
