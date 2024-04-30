@@ -39,14 +39,13 @@ jobs:
       - name: Build application
         run: |
           find ./src -type f -name "*.java" > sources.txt
-          javac -d out -cp ./lib/*:./src @sources.txt
+          javac -d out -cp ./tests/lib/junit-platform-console-standalone-1.9.3.jar:./tests/lib/gson-2.10.1.jar:./src @sources.txt
 
       - name: Build tests
         run: |
           find ./test -type f -name "*.java" > tests.txt
-          javac -d out -cp ./out:./tests/lib/junit-platform-console-standalone-1.9.3.jar:./test @tests.txt
+          javac -d out -cp ./out:./tests/lib/junit-platform-console-standalone-1.9.3.jar:./tests/lib/gson-2.10.1.jar:./test @tests.txt
 
       - name: Run tests
         run: |
-          java -jar ./tests/lib/junit-platform-console-standalone-1.9.3.jar --class-path out --scan-class-path
-
+          java -jar ./tests/lib/junit-platform-console-standalone-1.9.3.jar --class-path ./tests/lib/gson-2.10.1.jar:./out --scan-class-path
