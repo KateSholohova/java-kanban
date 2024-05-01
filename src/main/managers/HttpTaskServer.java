@@ -63,84 +63,78 @@ public class HttpTaskServer {
             String query = exchange.getRequestURI().getQuery();
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-            int choice = endpoint(path, method, body, query);
+            Choices choice = endpoint(path, method, body, query);
 
-            String response = "Обрабатываем запрос от клиента";
 
             switcher(choice, exchange, body, fileBackedTasksManager);
-
-            exchange.sendResponseHeaders(200, 0);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(response.getBytes());
-            }
         }
 
 
-        private void switcher(int choice, HttpExchange exchange, String body, TaskManager fileBackedTasksManager) {
+        private void switcher(Choices choice, HttpExchange exchange, String body, TaskManager fileBackedTasksManager) {
             switch (choice) {
-                case 2:
+                case GET_ALL_TASKS:
                     outputAllTasks(exchange, fileBackedTasksManager);
                     break;
-                case 3:
+                case GET_ALL_EPICS:
                     outputAllEpics(exchange, fileBackedTasksManager);
                     break;
-                case 4:
+                case GET_ALL_SUBTASKS:
                     outputAllSubTasks(exchange, fileBackedTasksManager);
                     break;
-                case 5:
+                case ERROR:
                     writeResponse(exchange, "Неверно составлен запрос", 400);
-                case 6:
+                case GET_BY_ID_TASK:
                     receiveTaskById(exchange, fileBackedTasksManager);
                     break;
-                case 7:
+                case GET_BY_ID_EPIC:
                     receiveEpicById(exchange, fileBackedTasksManager);
                     break;
-                case 8:
+                case GET_BY_ID_SUBTASK:
                     receiveSubTaskById(exchange, fileBackedTasksManager);
                     break;
-                case 9:
+                case CREATE_TASK:
                     createNewTask(body, exchange, fileBackedTasksManager);
                     break;
-                case 10:
+                case CREATE_EPIC:
                     createNewEpic(body, exchange, fileBackedTasksManager);
                     break;
-                case 11:
+                case CREATE_SUBTASK:
                     createNewSubTask(body, exchange, fileBackedTasksManager);
                     break;
-                case 12:
+                case UPDATE_TASK:
                     changeTask(body, exchange, fileBackedTasksManager);
                     break;
-                case 13:
+                case UPDATE_EPIC:
                     changeEpic(body, exchange, fileBackedTasksManager);
                     break;
-                case 14:
+                case UPDATE_SUBTASK:
                     changeSubTask(body, exchange, fileBackedTasksManager);
                     break;
-                case 16:
+                case DELETE_TASKS:
                     removeAllTasks(exchange, fileBackedTasksManager);
                     break;
-                case 17:
+                case DELETE_EPICS:
                     removeAllEpics(exchange, fileBackedTasksManager);
                     break;
-                case 18:
+                case DELETE_SUBTASKS:
                     removeAllSubTasks(exchange, fileBackedTasksManager);
                     break;
-                case 19:
+                case DELETE_BY_ID_TASK:
                     removeTaskById(exchange, fileBackedTasksManager);
                     break;
-                case 20:
+                case DELETE_BY_ID_EPIC:
                     removeEpicById(exchange, fileBackedTasksManager);
                     break;
-                case 21:
+                case DELETE_BY_ID_SUBTASK:
                     removeSubTaskById(exchange, fileBackedTasksManager);
                     break;
-                case 22:
+                case GET_HISTORY:
                     receiveHistory(exchange, fileBackedTasksManager);
                     break;
-                case 23:
+                case GET_EPICS_SUBTASKS:
                     receiveAllEpicSubtasks(exchange, fileBackedTasksManager);
                     break;
-                case 24:
+                case GET_PRIORITIZED:
                     receivePrioritize(exchange, fileBackedTasksManager);
                     break;
 
@@ -328,88 +322,85 @@ public class HttpTaskServer {
         }
 
 
-        private int endpoint(String path, String method, String body, String query) {
+        private Choices endpoint(String path, String method, String body, String query) {
             String[] pathParts = path.split("/");
             if (method.equals("GET")) {
-                if (pathParts.length == 2) return 1;
+                if (pathParts.length == 3 && query == null) {
+                    if (pathParts[2].equals("task")) return Choices.GET_ALL_TASKS;
+                    else if (pathParts[2].equals("epic")) return Choices.GET_ALL_EPICS;
 
-                else if (pathParts.length == 3 && query == null) {
-                    if (pathParts[2].equals("task")) return 2;
-                    else if (pathParts[2].equals("epic")) return 3;
-
-                    else if (pathParts[2].equals("subtask")) return 4;
-                    else if (pathParts[2].equals("history")) return 22;
-                    else if (pathParts[2].equals("prioritized")) return 24;
-                    else return 5;
+                    else if (pathParts[2].equals("subtask")) return Choices.GET_ALL_SUBTASKS;
+                    else if (pathParts[2].equals("history")) return Choices.GET_HISTORY;
+                    else if (pathParts[2].equals("prioritized")) return Choices.GET_PRIORITIZED;
+                    else return Choices.ERROR;
                 } else if (pathParts.length == 3) {
                     String[] queryParts = query.split("=");
                     if (queryParts.length <= 1 || !queryParts[0].equals("id") || queryParts.length > 2)
-                        return 5;
+                        return Choices.ERROR;
                     try {
                         Integer.parseInt(queryParts[1]);
-                        if (pathParts[2].equals("task")) return 6;
-                        else if (pathParts[2].equals("epic")) return 7;
+                        if (pathParts[2].equals("task")) return Choices.GET_BY_ID_TASK;
+                        else if (pathParts[2].equals("epic")) return Choices.GET_BY_ID_EPIC;
 
-                        else if (pathParts[2].equals("subtask")) return 8;
-                        else return 5;
+                        else if (pathParts[2].equals("subtask")) return Choices.GET_BY_ID_SUBTASK;
+                        else return Choices.ERROR;
                     } catch (NumberFormatException e) {
-                        return 5;
+                        return Choices.ERROR;
                     }
                 } else if (pathParts.length > 3) {
                     if (pathParts[2].equals("epics") && pathParts[4].equals("subtasks")) {
-                        return 23;
+                        return Choices.GET_EPICS_SUBTASKS;
                     }
-                } else return 5;
+                } else return Choices.ERROR;
             } else if (method.equals("POST")) {
-                if (body.isBlank()) return 5;
+                if (body.isBlank()) return Choices.ERROR;
 
                 if (pathParts.length == 3 && query == null) {
-                    if (pathParts[2].equals("task")) return 9;
-                    else if (pathParts[2].equals("epic")) return 10;
+                    if (pathParts[2].equals("task")) return Choices.CREATE_TASK;
+                    else if (pathParts[2].equals("epic")) return Choices.CREATE_EPIC;
 
-                    else if (pathParts[2].equals("subtask")) return 11;
-                    else return 5;
+                    else if (pathParts[2].equals("subtask")) return Choices.CREATE_SUBTASK;
+                    else return Choices.ERROR;
                 } else if (pathParts.length == 3) {
                     String[] queryParts = query.split("=");
                     if (queryParts.length <= 1 || !queryParts[0].equals("id") || queryParts.length > 2)
-                        return 5;
+                        return Choices.ERROR;
                     try {
                         Integer.parseInt(queryParts[1]);
                         if (pathParts[2].equals("task")) {
-                            System.out.println("dddd");
-                            return 12;
-                        } else if (pathParts[2].equals("epic")) return 13;
+                            return Choices.UPDATE_TASK;
+                        } else if (pathParts[2].equals("epic")) return Choices.UPDATE_EPIC;
 
-                        else if (pathParts[2].equals("subtask")) return 14;
-                        else return 5;
+                        else if (pathParts[2].equals("subtask")) return Choices.UPDATE_SUBTASK;
+                        else return Choices.ERROR;
                     } catch (NumberFormatException e) {
-                        return 5;
+                        return Choices.ERROR;
                     }
-                } else return 5;
+                } else return Choices.ERROR;
             } else if (method.equals("DELETE")) {
-                if (pathParts.length == 2) return 15;
-                else if (pathParts.length == 3 && query == null) {
-                    if (pathParts[2].equals("task")) return 16;
-                    else if (pathParts[2].equals("epic")) return 17;
-                    else if (pathParts[2].equals("subtask")) return 18;
-                    else return 5;
+
+                if (pathParts.length == 3 && query == null) {
+                    if (pathParts[2].equals("task")) return Choices.DELETE_TASKS;
+                    else if (pathParts[2].equals("epic")) return Choices.DELETE_EPICS;
+                    else if (pathParts[2].equals("subtask")) return Choices.DELETE_SUBTASKS;
+                    else return Choices.ERROR;
                 } else if (pathParts.length == 3) {
                     String[] queryParts = query.split("=");
                     if (queryParts.length <= 1 || !queryParts[0].equals("id") || queryParts.length > 2)
-                        return 5;
+                        return Choices.ERROR;
                     try {
                         Integer.parseInt(queryParts[1]);
-                        if (pathParts[2].equals("task")) return 19;
-                        else if (pathParts[2].equals("epic")) return 20;
+                        if (pathParts[2].equals("task")) return Choices.DELETE_BY_ID_TASK;
+                        else if (pathParts[2].equals("epic")) return Choices.DELETE_BY_ID_EPIC;
 
-                        else if (pathParts[2].equals("subtask")) return 21;
-                        else return 5;
+                        else if (pathParts[2].equals("subtask")) return Choices.DELETE_BY_ID_SUBTASK;
+                        else return Choices.ERROR;
                     } catch (NumberFormatException e) {
-                        return 5;
+                        return Choices.ERROR;
                     }
-                } else return 5;
+                } else return Choices.ERROR;
             }
-            return 5;
+            return Choices.ERROR;
         }
 
         private void writeResponse(HttpExchange exchange, String responseString, int responseCode) {
