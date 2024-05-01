@@ -2,7 +2,7 @@ package main.managers;
 
 public class Managers {
 
-    public TaskManager getDefault() {
+    public static TaskManager getDefault() {
         return new FileBackedTaskManager("test", "txt");
     }
 
